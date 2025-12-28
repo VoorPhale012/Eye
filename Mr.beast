@@ -1,0 +1,51 @@
+local enableDamage = true
+local currentLoadedRoom=workspace.CurrentRooms[game:GetService("ReplicatedStorage").GameData.LatestRoom.Value]
+local eyes=game:GetObjects("rbxassetid://101589002751227")[1]
+ 
+if eyes then end
+coroutine.wrap(function()
+game:GetService("ReplicatedStorage").GameData.LatestRoom.Changed:Wait()
+    game.Workspace:FindFirstChild("Eyes"):Destroy()
+    enableDamage = true
+end)()
+local num=math.floor(#currentLoadedRoom.Nodes:GetChildren()/2)
+eyes.CFrame=(
+	num==0  or currentLoadedRoom.Nodes[num]
+).CFrame+Vector3.new(0,7,0)
+ 
+eyes.Parent=workspace
+eyes.Ambience:Destroy()
+function GitAud(soundgit,filename)
+    SoundName=tostring(SoundName)
+    local url=soundgit
+    local FileName = filename
+    writefile(FileName..".mp3", game:HttpGet(url))
+    return (getcustomasset or getsynasset)(FileName..".mp3")
+end
+function CustomGitSound(soundlink, vol, filename)
+    local sound = Instance.new("Sound")
+    sound.SoundId = GitAud(soundlink, filename)
+    sound.Parent = eyes
+sound.Looped = true
+sound.Name = "Ambience"
+    sound.Volume = 1.5
+end
+CustomGitSound("https://raw.githubusercontent.com/VoorPhale012/Fogroom/refs/heads/main/Mrbeast.Mp3.mp3", 1, "Ambience")
+wait(1)
+eyes.Ambience:Play()
+task.wait(0.5)
+eyes.Attachment.Eyes.Enabled=true
+ 
+local hum=game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+while true and enableDamage do
+if not game.Workspace:FindFirstChild("Eyes") then break end
+	local _,found=workspace.CurrentCamera:WorldToScreenPoint(eyes.Position)
+	if found then
+		hum.Health-=6
+		eyes.Attack:Play()
+		if hum.Health<=0 then
+			game:GetService("ReplicatedStorage").GameStats["Player_".. game.Players.LocalPlayer.Name].Total.DeathCause.Value = "Eyes"
+		end
+	end
+	task.wait(0.25)
+end
